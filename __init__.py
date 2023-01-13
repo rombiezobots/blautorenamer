@@ -3,12 +3,14 @@
 ################################################################################
 
 
-if 'bpy' in locals():
+if 'properties' in locals():
     import importlib
+    preferences = importlib.reload(preferences)
     properties = importlib.reload(properties)
     operators = importlib.reload(operators)
     panels = importlib.reload(panels)
 else:
+    from . import preferences
     from . import properties
     from . import operators
     from . import panels
@@ -36,6 +38,7 @@ bl_info = {
 
 
 modules = [
+    preferences,
     properties,
     operators,
     panels,
