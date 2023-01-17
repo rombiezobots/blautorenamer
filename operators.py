@@ -109,11 +109,7 @@ class BLAUTORENAMER_OT_rename_objects(bpy.types.Operator):
                     data=ob.instance_collection,
                     keyword=settings.keyword
                 )
-                ob.name = get_clean_name(
-                    data=ob.instance_collection,
-                    keyword=settings.keyword,
-                    include_side=True
-                )
+                ob.name = ob.instance_collection.name
 
             # For all other objects, simply create a sanitized name. If the
             # object's data is accessible, rename it as well.
@@ -186,11 +182,12 @@ class BLAUTORENAMER_OT_auto_rename_all(bpy.types.Operator):
                 # first, then copy its name to the object.
                 if ob.instance_collection:
                     ob.instance_collection.name = get_clean_name(
-                        data=ob.instance_collection
+                        data=ob.instance_collection,
+                        data_type='COLLECTION'
                     )
                     ob.name = get_clean_name(
                         data=ob.instance_collection,
-                        include_side=True
+                        data_type='COLLECTION'
                     )
 
                 # For all other objects, simply create a sanitized name. If the
