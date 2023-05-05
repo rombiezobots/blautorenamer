@@ -1,9 +1,9 @@
 # blautorenamer
 
-An auto renamer for Blender, available under Item in the Viewport's side panel.
+An auto renamer for Blender, available in the Outliner's header.
 
-## Rename Selected Objects
-This is your standard generic object renamer. It takes an optional **keyword**, with a fallback to each object's current name. You can also let the tool decide what **side** the object is on, or override it with Left, Right or Center. The side tokens, as well as the **object type acronym**, are yours to customize in the **add-on preferences**.
+## Keyword renaming
+This is your standard generic object and collection renamer. It takes an optional **keyword**, with a fallback to each selected item's current name. You can also let the tool decide what **side** any objects are on (A), or override it with Left (L), Right (R) or Center (C). The side tokens, as well as the **object type acronym**, are yours to customize in the **add-on preferences**.
 
 The new name is copied to the object's data. To support shared object data, the **side** token is left out here.
 
