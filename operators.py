@@ -35,7 +35,9 @@ class BLAUTORENAMER_OT_auto_rename_all(bpy.types.Operator):
         default=True,
         description='Sanitize object data names, taking the keyword from their owners',
     )
-    # TODO: keep existing side if any
+    keep_existing_side: bpy.props.BoolProperty(
+        name='Keep Existing Side', default=True, description='Keep existing side acronym, if any'
+    )
     collections: bpy.props.BoolProperty(
         name='Collections', default=True, description='Sanitize collection names and copy them to their instances'
     )
@@ -43,8 +45,28 @@ class BLAUTORENAMER_OT_auto_rename_all(bpy.types.Operator):
     images: bpy.props.BoolProperty(name='Images', default=True, description='Rename images to their filename')
     worlds: bpy.props.BoolProperty(name='Worlds', default=True, description='Sanitize world names')
 
+    def _determine_existing_side(self, name: str) -> str:
+        valid_name = name.split('.')
+        if len(valid_name) == 4:
+            if valid_name[1] in ['C', 'L', 'R']:
+                return valid_name[1]
+        return None
+
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self, width=300)
+
+    def draw(self, context):
+        lay = self.layout
+        lay.use_property_split = True
+        lay.prop(self, 'objects_and_data')
+        split = lay.split(factor=0.1)
+        split.active = self.objects_and_data
+        split.label(text='')
+        split.prop(self, 'keep_existing_side')
+        lay.prop(self, 'collections')
+        lay.prop(self, 'materials')
+        lay.prop(self, 'images')
+        lay.prop(self, 'worlds')
 
     def execute(self, context):
         if self.objects_and_data:
@@ -60,7 +82,12 @@ class BLAUTORENAMER_OT_auto_rename_all(bpy.types.Operator):
                 # For all other objects, simply create a sanitized name. If the
                 # object's data is accessible, rename it as well.
                 else:
-                    ob.name = common.get_clean_name(data=ob, include_side=True)
+                    if self.keep_existing_side:
+                        ob.name = common.get_clean_name(
+                            data=ob, include_side=True, override_side=self._determine_existing_side(ob.name)
+                        )
+                    else:
+                        ob.name = common.get_clean_name(data=ob, include_side=True)
                     if ob.data:
                         if not common.is_linked(data=ob.data):
                             ob.data.name = common.get_clean_name(data=ob.data)

@@ -31,7 +31,7 @@ def get_clean_name(
 
     # If the object side is requested, include it in the name.
     if include_side:
-        side = override_side if override_side else get_side(ob=data)
+        side = override_side if override_side in ['C', 'L', 'R'] else get_side(ob=data)
         return f'{keyword}.{side}.{acronym}.001'
     return f'{keyword}.{acronym}.001'
 
