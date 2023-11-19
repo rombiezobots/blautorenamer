@@ -18,10 +18,13 @@ else:
 
 def rename_outliner_selection(self, context):
     settings = context.scene.blautorenamer.rename_objects
-    prefs = bpy.context.preferences.addons[__package__].preferences.acronyms
+    prefs = context.preferences.addons[__package__].preferences.acronyms
 
     # Get all selected ids in the Outliner.
-    ids = [id for id in context.selected_ids if not common.is_linked(data=id)]
+    area = context.area
+    region = next(r for r in area.regions if r.type == 'WINDOW')
+    with context.temp_override(area=area, region=region):
+        ids = [id for id in context.selected_ids if not common.is_linked(data=id)]
 
     for id in ids:
         if common.get_data_info(data=id).get('acronym') == prefs.collection:
