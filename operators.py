@@ -137,7 +137,7 @@ class BLAUTORENAMER_OT_sort_collections(bpy.types.Operator):
             if not collection.children:
                 return
 
-            children = sorted(collection.children, key=lambda c: c.name)
+            children = sorted([c for c in collection.children if not common.is_linked(data=c)], key=lambda c: c.name)
             for child in children:
                 collection.children.unlink(child)
                 collection.children.link(child)
