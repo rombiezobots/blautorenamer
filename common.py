@@ -47,6 +47,7 @@ def get_data_info(data: bpy.types.ID):
         {'acronym': prefs.text, 'bl_type': 'bpy.types.TextCurve', 'data_type': 'FONT'},
         {'acronym': prefs.grease_pencil, 'bl_type': 'bpy.types.GreasePencil', 'data_type': 'GPENCIL'},
         {'acronym': prefs.lattice, 'bl_type': 'bpy.types.Lattice', 'data_type': 'LATTICE'},
+        {'acronym': prefs.light, 'bl_type': 'bpy.types.Light', 'data_type': 'LIGHT'},
         {'acronym': prefs.material, 'bl_type': 'bpy.types.Material', 'data_type': 'MATERIAL'},
         {'acronym': prefs.mesh, 'bl_type': 'bpy_types.Mesh', 'data_type': 'MESH'},
         {'acronym': prefs.volume, 'bl_type': 'bpy.types.Volume', 'data_type': 'VOLUME'},
