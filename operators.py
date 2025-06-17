@@ -58,28 +58,34 @@ class BLAUTORENAMER_OT_auto_rename_all(bpy.types.Operator):
     def draw(self, context):
         lay = self.layout
         lay.use_property_split = True
+        lay.prop(self, 'collections')
         lay.prop(self, 'objects_and_data')
         split = lay.split(factor=0.1)
         split.active = self.objects_and_data
         split.label(text='')
         split.prop(self, 'keep_existing_side')
-        lay.prop(self, 'collections')
         lay.prop(self, 'materials')
         lay.prop(self, 'images')
         lay.prop(self, 'worlds')
 
     def execute(self, context):
+
+        if self.collections:
+            collections = [c for c in bpy.data.collections if not common.is_linked(data=c)]
+
+            for c in collections:
+                new_name = common.get_clean_name(data=c)
+                c.name = new_name
+
         if self.objects_and_data:
             objects = [ob for ob in bpy.data.objects if not common.is_linked(data=ob)]
 
             for ob in objects:
-                # For collection instances, rename their instancing collection
-                # first, then copy its name to the object.
+                # For collection instances, simply copy the collection's name to the object.
                 if ob.instance_collection:
-                    ob.instance_collection.name = common.get_clean_name(data=ob.instance_collection)
-                    ob.name = common.get_clean_name(data=ob.instance_collection)
+                    ob.name = ob.instance_collection.name
 
-                # For all other objects, simply create a sanitized name. If the
+                # For all other objects, create a sanitized name. If the
                 # object's data is accessible, rename it as well.
                 else:
                     if self.keep_existing_side:
@@ -91,12 +97,6 @@ class BLAUTORENAMER_OT_auto_rename_all(bpy.types.Operator):
                     if ob.data:
                         if not common.is_linked(data=ob.data):
                             ob.data.name = common.get_clean_name(data=ob.data)
-
-        if self.collections:
-            collections = [c for c in bpy.data.collections if not common.is_linked(data=c)]
-
-            for c in collections:
-                c.name = common.get_clean_name(data=c)
 
         if self.materials:
             materials = [m for m in bpy.data.materials if not common.is_linked(data=m)]
