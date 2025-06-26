@@ -36,6 +36,31 @@ def get_clean_name(
     return f'{keyword}.{acronym}.001'
 
 
+def get_rename_map(ids: list, sequence_tokens: list):
+    # For each sequence token, it's supposed to be interpreted as an indicator of a sequence within the previous one's.
+    map = {}
+
+    for index, id in enumerate(ids):
+        map[id] = get_clean_name()
+
+        if start.isdecimal():
+            # digits with zero padding to the start number's length
+            start = int(start)
+            stop = start + len(get_selected_outliner_ids())
+            length = len(start)
+            return [f'{i:length}' for i in range(start, stop)]
+
+
+def get_sequence_list(keyword: str, sequence_tokens: list):
+    for start in sequence_tokens:
+        if len(start) == 1 and ord(start) in range(65, 91):
+            # uppercase A-Z
+            print('uppercase A-Z')
+        if len(start) == 1 and ord(start) in range(97, 123):
+            # lowercase a-z
+            print('lowercase a-z')
+
+
 def get_data_info(data: bpy.types.ID):
     '''Get acronyms, bl_types and data_types for supported ID types.'''
     prefs = bpy.context.preferences.addons[__package__].preferences.acronyms
@@ -80,3 +105,11 @@ def get_side(ob: bpy.types.Object, treshold_factor: float = 1.1) -> str:
 
 def is_linked(data: bpy.types.ID) -> bool:
     return data.library or data.override_library
+
+
+def get_selected_outliner_ids():
+    context = bpy.context
+    area = context.area
+    region = next(r for r in area.regions if r.type == 'WINDOW')
+    with context.temp_override(area=area, region=region):
+        return [id for id in context.selected_ids if not is_linked(data=id)]

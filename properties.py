@@ -9,6 +9,7 @@ if 'common' in locals():
 else:
     from . import common
     import bpy
+    import re
 
 
 ########################################################################################################################
@@ -17,23 +18,33 @@ else:
 
 
 def rename_outliner_selection(self, context):
-    settings = context.scene.blautorenamer.rename_objects
+
+    settings = context.scene.blautorenamer.outliner
     prefs = context.preferences.addons[__package__].preferences.acronyms
 
-    # Get all selected ids in the Outliner.
-    area = context.area
-    region = next(r for r in area.regions if r.type == 'WINDOW')
-    with context.temp_override(area=area, region=region):
-        ids = [id for id in context.selected_ids if not common.is_linked(data=id)]
+    # NEW TAKE. DETERMINE KEYWORD OR LIST OF KEYWORDS.
+    sequence_tokens = re.findall(pattern=r'\[{1}(?P<start>\d*|\w{1})\]{1}', string=settings.keyword)
 
-    for id in ids:
+    # Get all selected ids in the Outliner.
+    ids = common.get_selected_outliner_ids()
+    rename_map = common.get_rename_map(ids=ids, sequence_tokens=sequence_tokens)
+
+    for new_name, id in rename_map.items():
+        id.name = new_name
+
+    # Determine if we're renaming using a list sequence.
+    # If the keyword has one or more sequence tokens, use the list of sequential numbers or letters.
+    # Else, just get one clean name for the selection.
+
+    for index, id in enumerate(ids):
+
         if common.get_data_info(data=id).get('acronym') == prefs.collection:
             # If the id is a Collection, simply rename it.
             id.name = common.get_clean_name(data=id, keyword=settings.keyword)
             # TODO: rename all objects that instance this collection
 
         else:
-            # For collection instances, rename their instancing collection first, then copy its name to the object.
+            # For collection instances, rename their instanced collection first, then copy its name to the object.
             if id.instance_collection:
                 id.instance_collection.name = common.get_clean_name(
                     data=id.instance_collection, keyword=settings.keyword
@@ -56,7 +67,7 @@ def rename_outliner_selection(self, context):
 ########################################################################################################################
 
 
-class RenameObjectsSettings(bpy.types.PropertyGroup):
+class OutlinerSettings(bpy.types.PropertyGroup):
     keyword: bpy.props.StringProperty(name='Keyword', default='keyword', update=rename_outliner_selection)
     side: bpy.props.EnumProperty(
         name='Side',
@@ -70,7 +81,7 @@ class RenameObjectsSettings(bpy.types.PropertyGroup):
 
 
 class BlautorenamerSceneProperties(bpy.types.PropertyGroup):
-    rename_objects: bpy.props.PointerProperty(type=RenameObjectsSettings)
+    outliner: bpy.props.PointerProperty(type=OutlinerSettings)
 
 
 ########################################################################################################################
@@ -79,7 +90,7 @@ class BlautorenamerSceneProperties(bpy.types.PropertyGroup):
 
 
 classes = [
-    RenameObjectsSettings,
+    OutlinerSettings,
     BlautorenamerSceneProperties,
 ]
 

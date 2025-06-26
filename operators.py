@@ -122,32 +122,6 @@ class BLAUTORENAMER_OT_auto_rename_all(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class BLAUTORENAMER_OT_sort_collections(bpy.types.Operator):
-    '''Sort collections alphabetically'''
-
-    bl_idname = 'blautorenamer.sort_collections'
-    bl_label = 'Sort Collections'
-    bl_options = {'UNDO'}
-
-    def execute(self, context):
-        def sort_collection(collection):
-            '''Recursive function that unlinks and relinks every sub
-            collection, then proceeds to repeat itself on that collection.'''
-
-            if not collection.children:
-                return
-
-            children = sorted([c for c in collection.children if not common.is_linked(data=c)], key=lambda c: c.name)
-            for child in children:
-                collection.children.unlink(child)
-                collection.children.link(child)
-                sort_collection(child)
-
-        sort_collection(context.scene.collection)
-
-        return {'FINISHED'}
-
-
 ########################################################################################################################
 # Registration
 ########################################################################################################################
@@ -156,6 +130,5 @@ class BLAUTORENAMER_OT_sort_collections(bpy.types.Operator):
 register, unregister = bpy.utils.register_classes_factory(
     [
         BLAUTORENAMER_OT_auto_rename_all,
-        BLAUTORENAMER_OT_sort_collections,
     ]
 )

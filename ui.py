@@ -13,12 +13,10 @@ import bpy
 
 def blautorenamer_ui(self, context):
     if context.space_data.display_mode in ['VIEW_LAYER', 'SCENES']:
-        settings = context.scene.blautorenamer.rename_objects
+        settings = context.scene.blautorenamer.outliner
         row = self.layout.row(align=True)
         row.prop(settings, 'keyword', text='', icon='EVENT_B')
         row.prop(settings, 'side', text='')
-        row.operator('blautorenamer.auto_rename_all', icon='BRUSH_DATA', text='')
-        row.operator('blautorenamer.sort_collections', icon='OUTLINER', text='')
 
 
 ########################################################################################################################

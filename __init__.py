@@ -10,11 +10,13 @@ if 'properties' in locals():
     properties = importlib.reload(properties)
     operators = importlib.reload(operators)
     ui = importlib.reload(ui)
+    menus = importlib.reload(menus)
 else:
     from . import preferences
     from . import properties
     from . import operators
     from . import ui
+    from . import menus
 
 
 ########################################################################################################################
@@ -43,6 +45,7 @@ modules = [
     properties,
     operators,
     ui,
+    menus,
 ]
 
 
