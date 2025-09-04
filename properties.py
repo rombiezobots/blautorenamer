@@ -35,9 +35,10 @@ def rename_outliner_selection(self, context):
         else:
             # For collection instances, rename their instancing collection first, then copy its name to the object.
             if id.instance_collection:
-                id.instance_collection.name = common.get_clean_name(
-                    data=id.instance_collection, keyword=settings.keyword
-                )
+                if not common.is_linked(id.instance_collection):
+                    id.instance_collection.name = common.get_clean_name(
+                        data=id.instance_collection, keyword=settings.keyword
+                    )
                 id.name = id.instance_collection.name
 
             # For all other objects, simply create a sanitized name. If the object's data is accessible, rename it
