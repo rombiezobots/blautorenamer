@@ -55,7 +55,7 @@ def get_data_info(data: bpy.types.ID):
     ]
 
     # If the data is an object, look for its datablock's type.
-    if str(type(data)) == '<class \'bpy_types.Object\'>':
+    if str(type(data)) == "<class '_bpy_types.Object'>":
         return next((typ for typ in types if typ.get('data_type') == data.type), {'acronym': 'OBJ'})
 
     # Else, look for its datablock type based on the Python / C++ class name. If it can't be found, it's a Collection.
