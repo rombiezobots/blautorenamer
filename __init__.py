@@ -26,9 +26,9 @@ bl_info = {
     'name': 'blautorenamer',
     'description': 'Auto-renaming tools.',
     'author': 'Sam Van Hulle',
-    'version': (0, 0, 1),
-    'blender': (3, 4, 0),
-    'location': 'View3D > UI',
+    'version': (0, 0, 2),
+    'blender': (5, 0, 0),
+    'location': 'Outliner',
     'category': 'Tools',
 }
 
